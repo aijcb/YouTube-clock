@@ -1,27 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>YouTube Timestamp Redirect</title>
+  <title>Jonathan’s On-Time Videos</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 2em;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
+      color: #222;
+    }
+    h2 {
+      font-size: 1.5em;
+      color: #444;
+      margin-top: 2em;
+      margin-bottom: 1em;
+    }
+    .video-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2em;
+    }
+    iframe {
+      width: 90%;
+      max-width: 480px;
+      height: 270px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Jonathan’s on-time video</h1>
+  <div class="video-grid">
+    <div>
+      <h2>Time Range-Based Video</h2>
+      <div id="video1">Loading...</div>
+    </div>
+
+    <div>
+      <h2>Exact 12h Timestamp Video</h2>
+      <div id="video2">Loading...</div>
+    </div>
+  </div>
+
   <script>
+    function getTimeRangeVideoURL() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+
+      let videoId = '';
+      let startHour = 0;
+
+      if (hours < 8) {
+        videoId = '0ROP5apIWY8'; // before 8 a.m.
+        startHour = hours;
+      } else if (hours <= 16) {
+        videoId = '3czH9dfRKn8'; // 8 a.m. – 4 p.m.
+        startHour = hours - 8;
+      } else {
+        videoId = '3czH9dfRKn8'; // after 4 p.m.
+        startHour = hours - 16;
+      }
+
+      const totalSeconds = (startHour * 3600) + (minutes * 60) + seconds;
+      return `https://www.youtube.com/embed/${videoId}?start=${totalSeconds}&autoplay=1&rel=0&modestbranding=1`;
+    }
+
     function to12Hour(h) {
       h = parseInt(h, 10);
       return (h % 12 === 0) ? 12 : h % 12;
     }
 
-    window.onload = function() {
+    function get12HourTimestampVideoURL() {
       const now = new Date();
-      let hours = to12Hour(now.getHours()).toString().padStart(2, '0');
-      let minutes = now.getMinutes().toString().padStart(2, '0');
-      let seconds = now.getSeconds().toString().padStart(2, '0');
+      const hh = to12Hour(now.getHours()).toString().padStart(2, '0');
+      const mm = now.getMinutes().toString().padStart(2, '0');
+      const ss = now.getSeconds().toString().padStart(2, '0');
 
-      const timestamp = `${hours}h${minutes}m${seconds}s`;
-      const url = `https://m.youtube.com/watch?v=y1s8hPjTEcI&t=${timestamp}`;
-      window.location.href = url;
-    };
+      const timestamp = `${hh}h${mm}m${ss}s`;
+      return `https://www.youtube.com/embed/y1s8hPjTEcI?start=${(parseInt(hh)*3600 + parseInt(mm)*60 + parseInt(ss))}&autoplay=1&rel=0&modestbranding=1`;
+    }
+
+    document.getElementById('video1').innerHTML =
+      `<iframe src="${getTimeRangeVideoURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+
+    document.getElementById('video2').innerHTML =
+      `<iframe src="${get12HourTimestampVideoURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   </script>
-</head>
-<body>
-  <p>Redirecting to YouTube with current time...</p>
+
 </body>
 </html>
