@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Jonathan’s On-Time Videos</title>
+  <title>Jonathan’s on-time video</title>
   <style>
     body {
       font-family: sans-serif;
@@ -12,15 +12,9 @@
       padding: 2em;
     }
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 0.5em;
-      color: #222;
-    }
-    h2 {
-      font-size: 1.5em;
-      color: #444;
-      margin-top: 2em;
+      font-size: 3em;
       margin-bottom: 1em;
+      color: #222;
     }
     .video-grid {
       display: flex;
@@ -29,12 +23,12 @@
       gap: 2em;
     }
     iframe {
-      width: 90%;
-      max-width: 480px;
-      height: 270px;
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
       border: none;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
     }
   </style>
 </head>
@@ -42,13 +36,8 @@
 
   <h1>Jonathan’s on-time video</h1>
   <div class="video-grid">
-    <div>
-      <div id="video1">Loading...</div>
-    </div>
-
-    <div>
-      <div id="video2">Loading...</div>
-    </div>
+    <div id="video1">Loading first video...</div>
+    <div id="video2">Loading second video...</div>
   </div>
 
   <script>
@@ -73,7 +62,7 @@
       }
 
       const totalSeconds = (startHour * 3600) + (minutes * 60) + seconds;
-      return `https://www.youtube.com/embed/${videoId}?start=${totalSeconds}&autoplay=1&rel=0&modestbranding=1`;
+      return `https://www.youtube.com/embed/${videoId}?start=${totalSeconds}&autoplay=1&mute=1&rel=0&modestbranding=1`;
     }
 
     function to12Hour(h) {
@@ -87,8 +76,8 @@
       const mm = now.getMinutes().toString().padStart(2, '0');
       const ss = now.getSeconds().toString().padStart(2, '0');
 
-      const timestamp = `${hh}h${mm}m${ss}s`;
-      return `https://www.youtube.com/embed/y1s8hPjTEcI?start=${(parseInt(hh)*3600 + parseInt(mm)*60 + parseInt(ss))}&autoplay=1&rel=0&modestbranding=1`;
+      const totalSeconds = (parseInt(hh) * 3600) + (parseInt(mm) * 60) + parseInt(ss);
+      return `https://www.youtube.com/embed/y1s8hPjTEcI?start=${totalSeconds}&autoplay=1&mute=1&rel=0&modestbranding=1`;
     }
 
     document.getElementById('video1').innerHTML =
