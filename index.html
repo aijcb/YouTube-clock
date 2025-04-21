@@ -6,39 +6,46 @@
   <style>
     body {
       font-family: sans-serif;
-      text-align: center;
       background: #f9f9f9;
       margin: 0;
       padding: 2em;
+      text-align: center;
     }
+
     h1 {
       font-size: 3em;
-      margin-bottom: 1em;
+      margin-bottom: 1.5em;
       color: #222;
     }
-    .video-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2em;
+
+    .video-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto 3em;
     }
+
     iframe {
       width: 100%;
-      max-width: 800px;
-      height: 450px;
+      height: 720px;
+      max-height: 90vh;
       border: none;
-      border-radius: 10px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 768px) {
+      iframe {
+        height: 360px;
+      }
     }
   </style>
 </head>
 <body>
 
   <h1>Jonathan’s on-time video</h1>
-  <div class="video-grid">
-    <div id="video1">Loading first video...</div>
-    <div id="video2">Loading second video...</div>
-  </div>
+
+  <div class="video-container" id="video1">Loading first video...</div>
+  <div class="video-container" id="video2">Loading second video...</div>
 
   <script>
     function getTimeRangeVideoURL() {
