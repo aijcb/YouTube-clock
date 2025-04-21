@@ -1,27 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>YouTube Timestamp Redirect</title>
+  <title>Time-based YouTube Redirect</title>
   <script>
-    function to12Hour(h) {
-      h = parseInt(h, 10);
-      return (h % 12 === 0) ? 12 : h % 12;
+    function redirectToVideo() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+
+      let videoId = '';
+      let startHour = 0;
+
+      if (hours < 8) {
+        videoId = '0ROP5apIWY8'; // first video
+        startHour = hours;
+      } else if (hours <= 16) {
+        videoId = '3czH9dfRKn8'; // second video
+        startHour = hours - 8;
+      } else {
+        videoId = '3czH9dfRKn8'; // same second video
+        startHour = hours - 16;
+      }
+
+      const totalSeconds = (startHour * 3600) + (minutes * 60) + seconds;
+      const url = `https://youtu.be/${videoId}?t=${totalSeconds}`;
+
+      window.location.href = url;
     }
 
-    window.onload = function() {
-      const now = new Date();
-      let hours = to12Hour(now.getHours()).toString().padStart(2, '0');
-      let minutes = now.getMinutes().toString().padStart(2, '0');
-      let seconds = now.getSeconds().toString().padStart(2, '0');
-
-      const timestamp = `${hours}h${minutes}m${seconds}s`;
-      const url = `https://m.youtube.com/watch?v=y1s8hPjTEcI&t=${timestamp}`;
-      window.location.href = url;
-    };
+    window.onload = redirectToVideo;
   </script>
 </head>
 <body>
-  <p>Redirecting to YouTube with current time...</p>
+  <p>Redirecting to your video...</p>
 </body>
 </html>
