@@ -2,9 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Time-based YouTube Redirect</title>
+  <title>Jonathan’s on-time video</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 2em;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: #222;
+      margin-bottom: 1em;
+    }
+    iframe {
+      width: 90%;
+      max-width: 800px;
+      height: 450px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Jonathan’s on-time video</h1>
+  <div id="video-container">
+    <p>Loading video...</p>
+  </div>
+
   <script>
-    function redirectToVideo() {
+    function getVideoEmbedURL() {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
@@ -14,26 +43,25 @@
       let startHour = 0;
 
       if (hours < 8) {
-        videoId = '0ROP5apIWY8'; // first video
+        videoId = '0ROP5apIWY8'; // before 8 a.m.
         startHour = hours;
       } else if (hours <= 16) {
-        videoId = '3czH9dfRKn8'; // second video
+        videoId = '3czH9dfRKn8'; // 8 a.m. – 4 p.m.
         startHour = hours - 8;
       } else {
-        videoId = '3czH9dfRKn8'; // same second video
+        videoId = '3czH9dfRKn8'; // after 4 p.m.
         startHour = hours - 16;
       }
 
       const totalSeconds = (startHour * 3600) + (minutes * 60) + seconds;
-      const url = `https://youtu.be/${videoId}?t=${totalSeconds}`;
 
-      window.location.href = url;
+      // Construct embed URL with autoplay and start time
+      return `https://www.youtube.com/embed/${videoId}?start=${totalSeconds}&autoplay=1&rel=0&modestbranding=1`;
     }
 
-    window.onload = redirectToVideo;
+    document.getElementById('video-container').innerHTML = `
+      <iframe src="${getVideoEmbedURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    `;
   </script>
-</head>
-<body>
-  <p>Redirecting to your video...</p>
 </body>
 </html>
