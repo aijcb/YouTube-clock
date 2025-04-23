@@ -2,54 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Jonathan’s On-Time Videos</title>
+  <title>Jonathan’s on-time video</title>
   <style>
     body {
       font-family: sans-serif;
-      text-align: center;
       background: #f9f9f9;
       margin: 0;
       padding: 2em;
+      text-align: center;
     }
+
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 0.5em;
+      font-size: 3em;
+      margin-bottom: 1.5em;
       color: #222;
     }
-    h2 {
-      font-size: 1.5em;
-      color: #444;
-      margin-top: 2em;
-      margin-bottom: 1em;
+
+    .video-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto 3em;
     }
-    .video-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2em;
-    }
+
     iframe {
-      width: 90%;
-      max-width: 480px;
-      height: 270px;
+      width: 100%;
+      height: 720px;
+      max-height: 90vh;
       border: none;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 768px) {
+      iframe {
+        height: 360px;
+      }
     }
   </style>
 </head>
 <body>
 
   <h1>Jonathan’s on-time video</h1>
-  <div class="video-grid">
-    <div>
-      <div id="video1">Loading...</div>
-    </div>
 
-    <div>
-      <div id="video2">Loading...</div>
-    </div>
-  </div>
+  <div class="video-container" id="video1">Loading first video...</div>
+  <div class="video-container" id="video2">Loading second video...</div>
 
   <script>
     function getTimeRangeVideoURL() {
@@ -73,7 +69,7 @@
       }
 
       const totalSeconds = (startHour * 3600) + (minutes * 60) + seconds;
-      return `https://www.youtube.com/embed/${videoId}?start=${totalSeconds}&autoplay=1&rel=0&modestbranding=1`;
+      return `https://www.youtube.com/embed/${videoId}?start=${totalSeconds}&autoplay=1&mute=1&rel=0&modestbranding=1`;
     }
 
     function to12Hour(h) {
@@ -81,21 +77,39 @@
       return (h % 12 === 0) ? 12 : h % 12;
     }
 
-    function get12HourTimestampVideoURL() {
+    function getAdjustedTimestampVideoURL() {
       const now = new Date();
-      const hh = to12Hour(now.getHours()).toString().padStart(2, '0');
-      const mm = now.getMinutes().toString().padStart(2, '0');
-      const ss = now.getSeconds().toString().padStart(2, '0');
 
-      const timestamp = `${hh}h${mm}m${ss}s`;
-      return `https://www.youtube.com/embed/y1s8hPjTEcI?start=${(parseInt(hh)*3600 + parseInt(mm)*60 + parseInt(ss))}&autoplay=1&rel=0&modestbranding=1`;
+      // Current time in 12-hour format
+      const h = to12Hour(now.getHours());
+      const m = now.getMinutes();
+      const s = now.getSeconds();
+
+      // Base video time: 5h 7m 25s
+      const baseH = 5;
+      const baseM = 7;
+      const baseS = 25;
+
+      // Convert both times to total seconds
+      const currentTotal = (h * 3600) + (m * 60) + s;
+      const baseTotal = (baseH * 3600) + (baseM * 60) + baseS;
+
+      let finalSeconds;
+
+      if (currentTotal >= baseTotal) {
+        finalSeconds = currentTotal - baseTotal;
+      } else {
+        finalSeconds = (12 * 3600) - (baseTotal - currentTotal); // 12-hour wraparound
+      }
+
+      return `https://www.youtube.com/embed/RHDLIhifRpk?start=${finalSeconds}&autoplay=1&mute=1&rel=0&modestbranding=1`;
     }
 
     document.getElementById('video1').innerHTML =
       `<iframe src="${getTimeRangeVideoURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
 
     document.getElementById('video2').innerHTML =
-      `<iframe src="${get12HourTimestampVideoURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      `<iframe src="${getAdjustedTimestampVideoURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   </script>
 
 </body>
