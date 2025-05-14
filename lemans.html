@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Le Mans 24h on-time video</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 2em;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 1.5em;
+      color: #222;
+    }
+
+    .video-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    iframe {
+      width: 100%;
+      height: 720px;
+      max-height: 90vh;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 768px) {
+      iframe {
+        height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Jonathan’s on-time video</h1>
+
+  <div class="video-container" id="video"></div>
+
+  <script>
+    function get24hWrappedTimestampVideoURL() {
+      const now = new Date();
+
+      const currentSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+      const zeroPointSeconds = 15 * 3600; // 15:00 = 54000s
+      const baseVideoOffset = 30 * 60 + 18; // 30m18s = 1818s
+
+      const timeOffset = (currentSeconds >= zeroPointSeconds)
+        ? currentSeconds - zeroPointSeconds
+        : (86400 - zeroPointSeconds + currentSeconds);
+
+      const totalSeconds = baseVideoOffset + timeOffset;
+
+      return `https://www.youtube.com/embed/W95zO8uBroI?start=${totalSeconds}&autoplay=1&mute=1&rel=0&modestbranding=1`;
+    }
+
+    document.getElementById('video').innerHTML =
+      `<iframe src="${get24hWrappedTimestampVideoURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  </script>
+
+</body>
+</html>
