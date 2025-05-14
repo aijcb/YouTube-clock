@@ -46,8 +46,10 @@
 
   <div class="video-container" id="video1">Loading first video...</div>
   <div class="video-container" id="video2">Loading second video...</div>
+  <div class="video-container" id="video3">Loading third video...</div>
 
   <script>
+    // Time-range-based video logic
     function getTimeRangeVideoURL() {
       const now = new Date();
       const hours = now.getHours();
@@ -58,13 +60,13 @@
       let startHour = 0;
 
       if (hours < 8) {
-        videoId = '0ROP5apIWY8'; // before 8 a.m.
+        videoId = '0ROP5aplWY8'; // before 8 a.m.
         startHour = hours;
-      } else if (hours <= 16) {
+      } else if (hours < 16) {
         videoId = '3czH9dfRKn8'; // 8 a.m. – 4 p.m.
         startHour = hours - 8;
       } else {
-        videoId = '3czH9dfRKn8'; // after 4 p.m.
+        videoId = 'aZX1ky_2xJU'; // after 4 p.m.
         startHour = hours - 16;
       }
 
@@ -72,6 +74,7 @@
       return `https://www.youtube.com/embed/${videoId}?start=${totalSeconds}&autoplay=1&mute=1&rel=0&modestbranding=1`;
     }
 
+    // 12-hour adjusted video logic
     function to12Hour(h) {
       h = parseInt(h, 10);
       return (h % 12 === 0) ? 12 : h % 12;
@@ -79,18 +82,15 @@
 
     function getAdjustedTimestampVideoURL() {
       const now = new Date();
-
-      // Current time in 12-hour format
       const h = to12Hour(now.getHours());
       const m = now.getMinutes();
       const s = now.getSeconds();
 
-      // Base video time: 5h 7m 25s
+      // Base video time: 5h 8m 24s
       const baseH = 5;
-      const baseM = 7;
-      const baseS = 25;
+      const baseM = 8;
+      const baseS = 24;
 
-      // Convert both times to total seconds
       const currentTotal = (h * 3600) + (m * 60) + s;
       const baseTotal = (baseH * 3600) + (baseM * 60) + baseS;
 
@@ -99,17 +99,38 @@
       if (currentTotal >= baseTotal) {
         finalSeconds = currentTotal - baseTotal;
       } else {
-        finalSeconds = (12 * 3600) - (baseTotal - currentTotal); // 12-hour wraparound
+        finalSeconds = (12 * 3600) - (baseTotal - currentTotal);
       }
 
       return `https://www.youtube.com/embed/RHDLIhifRpk?start=${finalSeconds}&autoplay=1&mute=1&rel=0&modestbranding=1`;
     }
 
+    // 24-hour aligned video logic
+    function get24hWrappedTimestampVideoURL() {
+      const now = new Date();
+
+      const currentSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+      const zeroPointSeconds = 15 * 3600; // 15:00 = 54000s
+      const baseVideoOffset = 30 * 60 + 18; // 30m18s = 1818s
+
+      const timeOffset = (currentSeconds >= zeroPointSeconds)
+        ? currentSeconds - zeroPointSeconds
+        : (86400 - zeroPointSeconds + currentSeconds);
+
+      const totalSeconds = baseVideoOffset + timeOffset;
+
+      return `https://www.youtube.com/embed/W95zO8uBroI?start=${totalSeconds}&autoplay=1&mute=1&rel=0&modestbranding=1`;
+    }
+
+    // Inject all three videos
     document.getElementById('video1').innerHTML =
       `<iframe src="${getTimeRangeVideoURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
 
     document.getElementById('video2').innerHTML =
       `<iframe src="${getAdjustedTimestampVideoURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+
+    document.getElementById('video3').innerHTML =
+      `<iframe src="${get24hWrappedTimestampVideoURL()}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   </script>
 
 </body>
